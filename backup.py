@@ -5,12 +5,9 @@ import smtplib
 
 # Import the email modules we'll need
 from email.mime.text import MIMEText
-
 from tqdm import tqdm
 import argparse
 import os
-import psycopg2
-import psycopg2.extras
 import re
 import shlex
 import signal
@@ -247,7 +244,7 @@ class DiskBackup(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
-        description="Backup directoris databases which are listed and remove old backups.",
+        description="Backup directoris which are listed and remove old backups.",
         epilog="All parameters can be stored to a file in --param=value format, "
                 + "one parameter per line, then specify this file with @file.")
 
