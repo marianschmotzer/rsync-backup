@@ -130,7 +130,8 @@ class Output(object):
 class DiskBackup(object):
 
     def __init__(self,directories_to_backup=['/srv'],mount_point=None, 
-            targetdir='/mnt/backup',emails=None,keep_backups=3,smtp_server='localhost',mail_from='root'):
+            targetdir='/mnt/backup',emails=None,keep_backups=3,smtp_server='localhost',mail_from='root',
+            dry_run = False):
         """
         Create DiskBackup object which back up list of given reposietoris.
         existing database with database with a referenc in the mastercloud.
@@ -150,6 +151,7 @@ class DiskBackup(object):
         self.smtp_server = smtp_server
         self.mail_from = mail_from
         self.emails = emails
+        self.dry_run = dry_run
 
     def SendEmail(self,message):
         if self.emails :
@@ -204,7 +206,8 @@ class DiskBackup(object):
             self.output.info("Check if %s is mounted" % self.mount_point)
             if os.path.ismount(self.mount_point):
                 self.output.info("Disk mounted at %s, backups continues" % self.mount_point)
-                self.SendEmail("Disk mounted backup starts")
+                if not self.dry_run:
+                    self.SendEmail("Disk mounted backup starts")
             else:
                 try:
                     subprocess.check_call(["mount", self.mount_point])
@@ -213,34 +216,38 @@ class DiskBackup(object):
                     self.SendEmail("Disk not attached please attach it! Reason %s" % str(e))
                     return 1
                 self.output.info("Disk mounted at %s, backups continues" % self.mount_point)
-                self.SendEmail("Disk mounted backup starts")
+                if not self.dry_run:
+                    self.SendEmail("Disk mounted backup starts")
 
         try:
             if not os.path.exists(self.targetdir):
                 os.makedirs(self.targetdir)
 
             """Backup directories"""
-            for directory in self.directories_to_backup:
-	        try:
-                    self.BackupDir(directory,self.backupdir)
-                except Exception as e:
-                    self.output.error(str(e))
-	        finally:
-                    self.output.info("Backup was sucessfull")
+            if not self.dry_run:
+                for directory in self.directories_to_backup:
+	            try:
+                        self.BackupDir(directory,self.backupdir)
+                    except Exception as e:
+                        self.output.error(str(e))
+	            finally:
+                        self.output.info("Backup was sucessfull")
         except Exception as e:
             self.output.error(str(e))
             self.SendEmail("Error %s, backup not sucessful" % str(e))
         finally:
             try:
-                self.RemoveOldBackup(self.targetdir,self.keep_backups)
-                if self.mount_point:
-                    if os.path.ismount(self.mount_point):
-                        subprocess.check_call(["umount", self.mount_point])
+                if not self.dry_run:
+                    self.RemoveOldBackup(self.targetdir,self.keep_backups)
+                    if self.mount_point:
+                        if os.path.ismount(self.mount_point):
+                            subprocess.check_call(["umount", self.mount_point])
             except Exception as e:
                 self.output.error(str(e))
                 self.SendEmail("Error %s, backup not sucessful" % str(e))
             finally:
-                self.SendEmail("Backup was sucessful ! You can remove disk")
+                if not self.dry_run:
+                    self.SendEmail("Backup was sucessful ! You can remove disk")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
@@ -268,6 +275,9 @@ if __name__ == '__main__':
 
     parser.add_argument("-s", "--smtpserver", metavar="SMTPSERVER",dest="smtp_server",
                         help="SMTP server to use " )
+
+    parser.add_argument("--dry-run", action="store_true",dest="dry_run",
+                        help="Dont do back just check env, if problems found sends email and displays message" )
 
     args = vars(parser.parse_args())
     DiskBackup(**args).run()
