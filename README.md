@@ -9,6 +9,7 @@ Python file backup script with functionality:
 Parameters
 --------------
 
+List of cmd line parameters 
 # `-d, --directory`  List of directories to backup.Can be specified multiple times.  
 # `-t, --targetdir` Backup target directory
 # `-m, --mountpoint` Mount point must be mounted befor backup
