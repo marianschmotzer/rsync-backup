@@ -34,20 +34,13 @@ class DelayedKeyboardInterrupt(object):
     Example:
     --------
     with DelayedKeyboardInterrupt():
-        do_some()
-        crucial()
-        stuff()
+    do_some()
+    crucial()
+    stuff()
     this_may_not_run_anymore()
-
     """
 
     def __init__(self, output=None):
-        """
-        Create DelayedKeyboardInterrupt to have code blocks uninterrupted by
-        SIGINT signals.
-
-        :param output: Optional instance of Output() to log debug message.
-        """
         self.output = output
 
     def __enter__(self):
@@ -65,7 +58,7 @@ class DelayedKeyboardInterrupt(object):
         if self.signal_received:
             if self.output:
                 self.output.debug("release previousely reveived SIGINT")
-            self.old_handler(*self.signal_received)
+                self.old_handler(*self.signal_received)
 
 
 class Output(object):
@@ -182,9 +175,7 @@ class DiskBackup(object):
 
     def BackupDir(self, directory, backupdir):
         """
-        Backup the given database.
-        :param database: Name of database to backup.
-        :param server: Database server connection info.
+        Backup the given directory.
         """
         self.output.info("backing up directory %s to %s" % (directory, backupdir))
 
@@ -195,8 +186,8 @@ class DiskBackup(object):
         stdout = rsync_proc.stdout.read()
         if rsync_proc.wait() != 0:
             raise BackupErrorException("Creating backup failed for directory %s: %s" % (backupdir,stdout) )
-        return 0
-        self.output.info("Directory %s sucessfuly stored \
+        else:
+            self.output.info("Directory %s sucessfuly stored \
                           List of files transfered %s" % (directory,stdout))
 
     def run(self):
@@ -245,7 +236,7 @@ class DiskBackup(object):
             except Exception as e:
                 self.output.error(str(e))
                 self.SendEmail("Error %s, backup not sucessful" % str(e))
-            finally:
+            else:
                 if not self.dry_run:
                     self.SendEmail("Backup was sucessful ! You can remove disk")
 

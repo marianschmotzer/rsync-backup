@@ -10,14 +10,14 @@ Parameters
 --------------
 
 List of cmd line parameters 
-# `-d, --directory`  List of directories to backup.Can be specified multiple times.  
-# `-t, --targetdir` Backup target directory
-# `-m, --mountpoint` Mount point must be mounted befor backup
-# `-k, --keepbackups`  Number of backups to keep
-# `-e, --email` Email to send notifications to.  
-# `-f, --from` Email sender address.No meaning without --email  
-# `-s, --smtpserver`  SMTP server to use  
-# `--dry-run` Don't do back just check env, if problems found sends email and displays message"
+ `-d, --directory`  List of directories to backup.Can be specified multiple times.  
+ `-t, --targetdir` Backup target directory
+ `-m, --mountpoint` Mount point must be mounted befor backup
+ `-k, --keepbackups`  Number of backups to keep
+ `-e, --email` Email to send notifications to.  
+ `-f, --from` Email sender address.No meaning without --email  
+ `-s, --smtpserver`  SMTP server to use  
+ `--dry-run` Don't do back just check env, if problems found sends email and displays message"
 
 Example of config file
 -----------------------
