@@ -8,6 +8,7 @@ Python file backup script with functionality:
 
 Parameters
 --------------
+
 # `-d, --directory`  List of directories to backup.Can be specified multiple times.  
 # `-t, --targetdir` Backup target directory
 # `-m, --mountpoint` Mount point must be mounted befor backup
@@ -20,6 +21,7 @@ Parameters
 Example of config file
 -----------------------
 ```python
+
 --directory=/srv/mail
 --directory=/srv/samba
 --directory=/srv/postgresql
@@ -27,7 +29,9 @@ Example of config file
 --email=admin
 --smtpserver=localhost:25
 --mountpoint=/mnt/backup
+
 ```
+
 ## Dependencies
 
 Python modules : 
